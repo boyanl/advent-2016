@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, result};
+use std::collections::VecDeque;
 
 fn simulate_1(n: usize) -> usize {
     let mut cnts = vec![0; n];
@@ -24,25 +24,39 @@ fn simulate_1(n: usize) -> usize {
     cnts[0]
 }
 
+fn J(n: usize) -> usize {
+    if n == 1 || n == 2 {
+        return 1;
+    }
+    match n % 2 {
+        0 => 2 * J(n / 2) - 1,
+        1 => 2 * J(n / 2) + 1,
+        _ => todo!(),
+    }
+}
+
 fn part_one() {
     let input = 3014387;
-    let result = simulate_1(input);
+    let result = J(input);
     println!("{result}");
 }
 
 fn simulate_2(n: usize) -> usize {
-    let mut indices = VecDeque::new();
-    for i in 0..n {
-        indices.push_back(i + 1);
+    let mut first_half = (1..=n / 2).collect::<VecDeque<_>>();
+    let mut second_half = (n / 2 + 1..=n).collect::<VecDeque<_>>();
+
+    for _ in 0..n - 1 {
+        if second_half.len() >= first_half.len() {
+            second_half.pop_front();
+        } else {
+            first_half.pop_back();
+        }
+
+        second_half.push_back(first_half.pop_front().unwrap());
+        first_half.push_back(second_half.pop_front().unwrap());
     }
 
-    while indices.len() > 1 {
-        let to_remove = indices.len() / 2;
-        indices.remove(to_remove);
-        indices.rotate_left(1);
-    }
-
-    indices[0]
+    first_half[0]
 }
 
 fn calculate_2(n: usize) -> usize {
@@ -74,6 +88,20 @@ fn calculate_2(n: usize) -> usize {
     }
 
     result[n]
+}
+
+fn calculate_2_1(n: usize) -> usize {
+    let mut pow = 1;
+    while 3 * pow <= n {
+        pow *= 3;
+    }
+    if n == pow {
+        return n;
+    }
+    if n - pow <= pow {
+        return n - pow;
+    }
+    2 * n - 3 * pow
 }
 
 fn part_two() {
