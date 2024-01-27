@@ -42,6 +42,24 @@ impl AddAssign<Direction> for Point2 {
     }
 }
 
+impl PartialOrd for Point2 {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        if self.x != other.x {
+            return Some(self.x.cmp(&other.x));
+        }
+        return Some(self.y.cmp(&other.y));
+    }
+}
+
+impl Ord for Point2 {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.x != other.x {
+            return self.x.cmp(&other.x);
+        }
+        return self.y.cmp(&other.y);
+    }
+}
+
 pub fn origin() -> Point2 {
     return Point2 { x: 0, y: 0 };
 }
